@@ -115,18 +115,38 @@ h1{
 }
 .store-btn:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:var(--shadow-btn-hover);}
 .store-btn:active{transform:translateY(0);box-shadow:var(--shadow-btn);}
-.store-btn[aria-expanded="true"]{border-color:var(--accent);border-width:2px;box-shadow:var(--shadow-btn-hover);}
+.store-btn[aria-pressed="true"]{border-color:var(--accent);border-width:2px;box-shadow:var(--shadow-btn-hover);}
 .store-btn .name{font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:space-between;gap:6px;}
 .store-btn .sub{font-size:13px;color:var(--ink-400);display:flex;align-items:center;gap:4px;}
 .store-btn .sub::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.55;}
-.store-btn .chev{width:20px;height:20px;flex-shrink:0;padding:2px;border-radius:50%;background:var(--surface-raised);box-shadow:0 0 0 1px var(--border-strong) inset;opacity:.9;transition:transform .15s ease,background .15s ease;}
-.store-btn[aria-expanded="true"] .chev{transform:rotate(180deg);background:var(--accent);color:#fff;box-shadow:none;}
+.store-btn .radio-dot{width:18px;height:18px;flex-shrink:0;border-radius:50%;border:2px solid var(--border-strong);background:var(--surface-raised);position:relative;transition:border-color .15s ease;}
+.store-btn[aria-pressed="true"] .radio-dot{border-color:var(--accent);}
+.store-btn[aria-pressed="true"] .radio-dot::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--accent);}
 .store-readmoo{background:var(--readmoo-tint);}
 .store-readmoo .name{color:var(--readmoo-ink);}
 .store-kobo{background:var(--kobo-tint);}
 .store-kobo .name{color:var(--kobo-ink);}
 .store-books{background:var(--books-tint);}
 .store-books .name{color:var(--books-ink);}
+
+.hero-layout{display:flex;gap:16px;align-items:flex-start;margin-bottom:1.25rem;}
+.month-sidebar{
+  flex:0 0 152px;display:flex;flex-direction:column;gap:8px;
+}
+.month-sidebar button{
+  font-family:inherit;font-size:14px;font-weight:500;text-align:left;
+  padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-strong);
+  background:var(--surface-raised);color:var(--ink-600);box-shadow:var(--shadow-btn);
+  transition:border-color .12s ease,box-shadow .12s ease,transform .1s ease;
+}
+.month-sidebar button:hover{border-color:var(--accent);transform:translateX(2px);}
+.month-sidebar button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;box-shadow:var(--shadow-btn-hover);}
+#chartPanel{flex:1 1 320px;min-width:0;}
+@media (max-width:640px){
+  .hero-layout{flex-direction:column;}
+  .month-sidebar{flex-direction:row;overflow-x:auto;flex:0 0 auto;width:100%;padding-bottom:2px;}
+  .month-sidebar button{flex:0 0 auto;white-space:nowrap;}
+}
 
 .chart-panel{
   background:var(--surface-raised);border:0.5px solid var(--border);border-radius:14px;
@@ -148,17 +168,6 @@ h1{
   background:var(--surface);border-radius:14px;padding:16px;margin-bottom:1.25rem;
   display:flex;flex-direction:column;gap:14px;
 }
-.month-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;}
-.month-tabs button{
-  flex:0 0 auto;font-family:inherit;font-size:15px;font-weight:500;
-  padding:8px 16px;border-radius:999px;border:1.5px solid var(--border-strong);
-  background:var(--surface-raised);color:var(--ink-600);box-shadow:var(--shadow-btn);
-  transition:border-color .12s ease,box-shadow .12s ease,transform .1s ease;
-}
-.month-tabs button:hover{border-color:var(--accent);transform:translateY(-1px);}
-.month-tabs button:active{transform:translateY(0);}
-.month-tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;box-shadow:var(--shadow-btn-hover);}
-
 .filter-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;}
 .chips{display:flex;gap:8px;flex-wrap:wrap;}
 .chips button{
@@ -244,25 +253,27 @@ h1{
   <h1>每月電子書暢銷排行榜</h1>
   <p class="lede">彙整博客來、讀墨、Kobo 三大平台的每月電子書排行資料，一頁掌握書市動態，並可直接前往各平台查看最新即時榜。</p>
 
-  <nav class="store-links" aria-label="查看各平台分類佔比">
-    <button type="button" class="store-btn store-books" data-platform="books" aria-expanded="false">
-      <span class="name">博客來<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
-      <span class="sub">查看分類佔比</span>
+  <nav class="store-links" aria-label="選擇要看的平台分類佔比">
+    <button type="button" class="store-btn store-books" data-platform="books" aria-pressed="false">
+      <span class="name">博客來<span class="radio-dot"></span></span>
+      <span class="sub">分類佔比</span>
     </button>
-    <button type="button" class="store-btn store-readmoo" data-platform="readmoo" aria-expanded="false">
-      <span class="name">讀墨 Readmoo<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
-      <span class="sub">查看分類佔比</span>
+    <button type="button" class="store-btn store-readmoo" data-platform="readmoo" aria-pressed="false">
+      <span class="name">讀墨 Readmoo<span class="radio-dot"></span></span>
+      <span class="sub">分類佔比</span>
     </button>
-    <button type="button" class="store-btn store-kobo" data-platform="kobo" aria-expanded="false">
-      <span class="name">Kobo<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
-      <span class="sub">查看分類佔比</span>
+    <button type="button" class="store-btn store-kobo" data-platform="kobo" aria-pressed="false">
+      <span class="name">Kobo<span class="radio-dot"></span></span>
+      <span class="sub">分類佔比</span>
     </button>
   </nav>
 
-  <div id="chartPanel"></div>
+  <div class="hero-layout">
+    <div class="month-sidebar" id="monthSidebar" role="tablist" aria-label="選擇月份"></div>
+    <div id="chartPanel"></div>
+  </div>
 
   <div class="panel">
-    <div class="month-tabs" id="monthTabs" role="tablist" aria-label="選擇月份"></div>
     <div class="filter-row">
       <div class="chips" id="platformChips" role="group" aria-label="篩選平台"></div>
       <input type="search" id="search" placeholder="搜尋書名或作者">
@@ -308,10 +319,10 @@ function sliceColor(slot, nSlices){
   return `hsl(${hue} 60% ${dark ? 66 : 45}%)`;
 }
 
-let state = { month: MONTHS[MONTHS.length - 1], platform: "全部", q: "", chartPlatform: null };
+let state = { month: MONTHS[MONTHS.length - 1], platform: "全部", q: "", chartPlatform: "books" };
 
-function renderMonthTabs(){
-  const el = document.getElementById("monthTabs");
+function renderMonthSidebar(){
+  const el = document.getElementById("monthSidebar");
   el.innerHTML = "";
   MONTHS.forEach(m => {
     const btn = document.createElement("button");
@@ -436,9 +447,8 @@ function buildDonut(slices, total){
 function renderChartPanel(){
   const el = document.getElementById("chartPanel");
   document.querySelectorAll(".store-btn").forEach(b => {
-    b.setAttribute("aria-expanded", b.dataset.platform === state.chartPlatform ? "true" : "false");
+    b.setAttribute("aria-pressed", b.dataset.platform === state.chartPlatform ? "true" : "false");
   });
-  if (!state.chartPlatform){ el.innerHTML = ""; return; }
 
   const plat = state.chartPlatform;
   const pdata = PIE_DATA[state.month] && PIE_DATA[state.month][plat];
@@ -484,7 +494,7 @@ function escapeHtml(s){
 }
 
 function renderAll(){
-  renderMonthTabs();
+  renderMonthSidebar();
   renderPlatformChips();
   renderStatCards();
   renderNote();
@@ -500,8 +510,7 @@ document.getElementById("search").addEventListener("input", (e) => {
 
 document.querySelectorAll(".store-btn").forEach(btn => {
   btn.addEventListener("click", () => {
-    const p = btn.dataset.platform;
-    state.chartPlatform = state.chartPlatform === p ? null : p;
+    state.chartPlatform = btn.dataset.platform;
     renderChartPanel();
   });
 });
